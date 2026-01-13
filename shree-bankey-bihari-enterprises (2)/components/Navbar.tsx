@@ -72,7 +72,7 @@ const Navbar: React.FC = () => {
     <button
       onClick={onClick}
       className={`relative group px-2 py-2 transition-colors duration-300 ${
-        isActive ? "text-[#1e3023]" : "text-[#1e3023] hover:text-[#1e3023]"
+        isActive ? "text-[#1e3023]" : "text-[#1e3023]"
       }`}
     >
       {label}
@@ -128,12 +128,14 @@ const Navbar: React.FC = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute left-0 mt-4 w-48 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border z-50">
+                <div className="absolute left-0 mt-4 w-52 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border z-50 overflow-hidden py-1">
                   {categories.map((cat) => (
                     <button
                       key={cat._id}
                       onClick={() => goToCategory(cat._id)}
-                      className="w-full text-left px-5 py-3 text-sm hover:text-[#1e3023]"
+                      className="w-full text-left px-5 py-3 text-sm
+                                 transition-all duration-200
+                                 hover:bg-[#1e3023]/5 hover:translate-x-1"
                     >
                       {cat.name}
                     </button>
@@ -163,7 +165,9 @@ const Navbar: React.FC = () => {
               </button>
 
               <div
-                className={`absolute left-0 mt-4 w-52 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border
+                className={`absolute left-0 mt-4 w-56 bg-white/90 backdrop-blur-md
+                rounded-2xl shadow-xl border
+                overflow-hidden py-1
                 transition-all duration-300
                 ${
                   isDropdownOpen
@@ -175,9 +179,22 @@ const Navbar: React.FC = () => {
                   <button
                     key={cat._id}
                     onClick={() => goToCategory(cat._id)}
-                    className="w-full text-left px-6 py-3 text-xs uppercase hover:text-[#1e3023]"
+                    className="group relative w-full text-left px-6 py-3.5 text-xs uppercase
+                               flex items-center
+                               transition-all duration-300 ease-out
+                               hover:bg-[#1e3023]/5"
                   >
-                    {cat.name}
+                    {/* Animated left bar */}
+                    <span
+                      className="absolute left-0 top-0 h-full w-[2px] bg-[#1e3023]
+                                 scale-y-0 group-hover:scale-y-100
+                                 transition-transform duration-300 origin-top"
+                    />
+
+                    {/* Text */}
+                    <span className="transition-transform duration-300 group-hover:translate-x-1">
+                      {cat.name}
+                    </span>
                   </button>
                 ))}
               </div>
