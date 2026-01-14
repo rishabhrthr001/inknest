@@ -100,7 +100,7 @@ const Navbar: React.FC = () => {
           ${isScrolled ? "shadow-lg bg-white/80 py-2 md:py-3" : ""}`}
         >
           {/* LEFT */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6 md:space-x-4">
             <div
               className="flex items-center cursor-pointer"
               onClick={handleLogoClick}
@@ -184,14 +184,11 @@ const Navbar: React.FC = () => {
                                transition-all duration-300 ease-out
                                hover:bg-[#1e3023]/5"
                   >
-                    {/* Animated left bar */}
                     <span
                       className="absolute left-0 top-0 h-full w-[2px] bg-[#1e3023]
                                  scale-y-0 group-hover:scale-y-100
                                  transition-transform duration-300 origin-top"
                     />
-
-                    {/* Text */}
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       {cat.name}
                     </span>

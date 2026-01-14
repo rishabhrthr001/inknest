@@ -111,16 +111,27 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
             <div>
               <h4 className="font-bold text-[#1e3023] mb-1">Office Address</h4>
               <p className="text-[#1e3023]/60">
-                L-1/109 Satsang Bhawan Road ,Mohan garden, <br />
+                L-1/109 Satsang Bhawan Road, Mohan garden, <br />
                 Uttam Nagar, New Delhi, India
               </p>
             </div>
+
             <div>
               <h4 className="font-bold text-[#1e3023] mb-1">Inquiries</h4>
               <p className="text-[#1e3023]/60">
-                hello@sbb.com
+                <a
+                  href="mailto:contact@inknest.com"
+                  className="hover:text-[#1e3023] transition-colors"
+                >
+                  contact@inknest.com
+                </a>
                 <br />
-                +91 9811544614
+                <a
+                  href="tel:+919811544614"
+                  className="hover:text-[#1e3023] transition-colors"
+                >
+                  +91-9811544614
+                </a>
               </p>
             </div>
           </div>

@@ -65,12 +65,22 @@ const Footer: React.FC = () => {
             <div className="space-y-3 mb-8 text-sm text-[#fdfbf7]/70">
               <div className="flex items-center gap-2">
                 <Mail size={14} />
-                <span>contact@inknest.com</span>
+                <a
+                  href="mailto:contact@inknest.com"
+                  className="hover:text-[#fdfbf7] transition-colors"
+                >
+                  contact@inknest.com
+                </a>
               </div>
 
               <div className="flex items-center gap-2">
                 <Phone size={14} />
-                <span>+91-9811544614</span>
+                <a
+                  href="tel:+919811544614"
+                  className="hover:text-[#fdfbf7] transition-colors"
+                >
+                  +91-9811544614
+                </a>
               </div>
 
               <button
