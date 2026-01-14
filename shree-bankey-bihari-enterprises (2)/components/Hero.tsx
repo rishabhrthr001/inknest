@@ -7,14 +7,16 @@ interface HeroProps {
 
 const HERO_SLIDES = [
   {
-    image: "/Paperbag.png",
+    image: "/Paperbag.jpg",
+    mobileImage: "/mobile-bg1.png",
     title: "Precision in Every Print",
     subtitle:
       "Elevating your brand with premium paper bags and packaging solutions.",
-    overlay: "bg-black/30",
+    overlay: "bg-black/55",
   },
   {
     image: "/Stickers.png",
+    mobileImage: "/mobile-bg2.png",
     title: "Stickers That Speak",
     subtitle:
       "High-quality custom stickers designed to make your brand unforgettable.",
@@ -22,16 +24,26 @@ const HERO_SLIDES = [
   },
   {
     image: "/Stationery.png",
+    mobileImage: "/mobile-bg3.png",
     title: "Complete Branding Essentials",
     subtitle:
       "Notepads, business cards, tags, labels & envelopes — crafted to perfection.",
-    overlay: "bg-black/30",
+    overlay: "bg-black/55",
   },
 ];
 
 const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
   const [index, setIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  /* ---------- SCREEN SIZE DETECTION ---------- */
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640); // Tailwind sm
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const nextStep = () => {
     if (isAnimating) return;
@@ -66,9 +78,11 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
             }
           `}
           style={{
-            backgroundImage: `url(${slide.image})`,
+            backgroundImage: `url(${
+              isMobile ? slide.mobileImage : slide.image
+            })`,
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: isMobile ? "top center" : "center",
           }}
         />
       ))}
@@ -93,7 +107,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
 
         <button
           onClick={() => onScrollTo("categories")}
-          className="mt-12 px-12 py-5 bg-[#fdfbf7] text-[#1e3023] rounded-full font-bold uppercase tracking-[0.2em] text-xs
+          className="mt-12 px-12 py-5 bg-[#fdfbf7] text-[#4a3728]/80 rounded-full font-bold uppercase tracking-[0.2em] text-xs
                      hover:bg-white hover:scale-105 active:scale-95 transition-all duration-500
                      opacity-0 animate-fade-up delay-500"
         >

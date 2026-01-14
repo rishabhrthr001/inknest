@@ -125,17 +125,17 @@ const AdminCategories: React.FC = () => {
         {/* HEADER */}
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold serif text-[#1e3023]">
+            <h2 className="text-2xl font-bold serif text-[#4a3728]">
               Categories
             </h2>
-            <p className="text-sm text-[#1e3023]/60">
+            <p className="text-sm text-[#4a3728]/60">
               Manage product categories
             </p>
           </div>
 
           <button
             onClick={() => setAdding(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#1e3023] text-white rounded-full hover:bg-[#2f4a37] transition text-sm"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#4a3728] text-white rounded-full hover:opacity-90 transition text-sm"
           >
             <Plus size={14} />
             Add Category
@@ -160,7 +160,7 @@ const AdminCategories: React.FC = () => {
                   <div className="flex gap-4">
                     <button
                       onClick={() => openEdit(c)}
-                      className="px-4 py-2 rounded-full bg-white text-[#1e3023] flex items-center gap-2"
+                      className="px-4 py-2 rounded-full bg-white text-[#4a3728] flex items-center gap-2"
                     >
                       <Edit2 size={14} /> Edit
                     </button>
@@ -176,10 +176,10 @@ const AdminCategories: React.FC = () => {
               </div>
 
               <div className="h-[15%] px-4 py-2">
-                <h3 className="text-sm font-bold text-[#1e3023] truncate">
+                <h3 className="text-sm font-bold text-[#4a3728] truncate">
                   {c.name}
                 </h3>
-                <p className="text-xs text-[#1e3023]/60 line-clamp-1">
+                <p className="text-xs text-[#4a3728]/60 line-clamp-1">
                   {c.description}
                 </p>
               </div>
@@ -193,7 +193,7 @@ const AdminCategories: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
           <div className="bg-white w-full max-w-4xl rounded-3xl p-8 shadow-2xl">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold serif text-[#1e3023]">
+              <h3 className="text-2xl font-bold serif text-[#4a3728]">
                 {editing ? "Edit Category" : "Add Category"}
               </h3>
               <button
@@ -220,8 +220,8 @@ const AdminCategories: React.FC = () => {
                   />
                 ) : (
                   <>
-                    <Upload size={32} className="text-[#1e3023]/40 mb-2" />
-                    <p className="text-xs text-[#1e3023]/60">
+                    <Upload size={32} className="text-[#4a3728]/40 mb-2" />
+                    <p className="text-xs text-[#4a3728]/60">
                       Upload category image
                     </p>
                   </>
@@ -240,7 +240,7 @@ const AdminCategories: React.FC = () => {
 
                 <label
                   htmlFor="image"
-                  className="mt-4 px-4 py-1.5 border rounded-full cursor-pointer text-sm hover:bg-[#2f4a37]/5 transition"
+                  className="mt-4 px-4 py-1.5 border rounded-full cursor-pointer text-sm hover:bg-[#4a3728]/5 transition"
                 >
                   Choose Image
                 </label>
@@ -267,7 +267,7 @@ const AdminCategories: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-full flex items-center justify-center gap-2 bg-[#1e3023] text-white hover:bg-[#2f4a37]"
+                  className="w-full py-3 rounded-full flex items-center justify-center gap-2 bg-[#4a3728] text-white hover:opacity-90"
                 >
                   <Save size={14} />
                   Save Category

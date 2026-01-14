@@ -25,17 +25,13 @@ const ProductPage: React.FC = () => {
       try {
         setLoading(true);
 
-        // 1️⃣ Fetch product
         const productRes = await axios.get(`${API}/api/products/${id}`);
-
         const prod: Product = productRes.data;
         setProduct(prod);
 
-        // 2️⃣ Fetch category using product.categoryId
         const categoryRes = await axios.get(
           `${API}/api/categories/${prod.categoryId}`
         );
-
         setCategory(categoryRes.data);
 
         window.scrollTo({ top: 0, left: 0 });
@@ -66,7 +62,6 @@ const ProductPage: React.FC = () => {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
@@ -83,16 +78,16 @@ const ProductPage: React.FC = () => {
         <div className="flex items-center justify-between mb-12">
           <button
             onClick={() => navigate(`/category/${category._id}`)}
-            className="flex items-center space-x-2 text-xs uppercase tracking-widest font-bold text-[#24452d]/60 hover:text-[#8b5e3c] transition"
+            className="flex items-center space-x-2 text-xs uppercase tracking-widest font-bold text-[#4a3728]/60 hover:text-[#4a3728] transition"
           >
             <ArrowLeft size={16} />
             <span>Back to {category.name}</span>
           </button>
 
-          <nav className="hidden md:flex items-center space-x-2 text-xs uppercase tracking-[0.2em] font-bold text-[#1e3023]">
+          <nav className="hidden md:flex items-center space-x-2 text-xs uppercase tracking-[0.2em] font-bold text-[#4a3728]">
             <span>Products</span>
             <ChevronRight size={12} />
-            <span className="text-[#24452d]/60">{category.name}</span>
+            <span className="text-[#4a3728]/60">{category.name}</span>
             <ChevronRight size={12} />
             <span className="text-[#4a3728]">{product.name}</span>
           </nav>
@@ -128,7 +123,7 @@ const ProductPage: React.FC = () => {
                   onClick={() => setActiveImageIndex(idx)}
                   className={`w-24 aspect-square rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
                     activeImageIndex === idx
-                      ? "border-[#8b5e3c]"
+                      ? "border-[#4a3728]"
                       : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
@@ -145,7 +140,7 @@ const ProductPage: React.FC = () => {
 
           {/* ---------- DETAILS ---------- */}
           <div className="lg:w-1/2 flex flex-col justify-center">
-            <span className="text-[#1e3023] font-bold text-xs uppercase tracking-[0.3em] mb-4">
+            <span className="text-[#4a3728] font-bold text-xs uppercase tracking-[0.3em] mb-4">
               {category.name}
             </span>
 
@@ -159,7 +154,7 @@ const ProductPage: React.FC = () => {
 
             <button
               onClick={() => navigate("/", { state: { scrollTo: "contact" } })}
-              className="px-10 py-5 bg-[#1e3023] text-white rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#24452d] transition-all flex items-center space-x-3 w-fit"
+              className="px-10 py-5 bg-[#4a3728] text-white rounded-full font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-all flex items-center space-x-3 w-fit"
             >
               <ShoppingBag size={16} />
               <span>Enquire for Bulk</span>

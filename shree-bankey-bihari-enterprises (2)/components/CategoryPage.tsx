@@ -62,16 +62,16 @@ const CategoryPage: React.FC = () => {
               state: { scrollBack: "categories" },
             })
           }
-          className="mb-8 md:mb-12 text-[10px] md:text-xs uppercase tracking-widest font-bold text-[#1e3023]"
+          className="mb-8 md:mb-12 text-[10px] md:text-xs uppercase tracking-widest font-bold text-[#4a3728]"
         >
           ← Back to Categories
         </button>
 
         <div className="border-b border-[#4a3728]/10 pb-8 md:pb-12">
-          <nav className="flex items-center space-x-2 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold text-[#1e3023] mb-4 md:mb-6">
+          <nav className="flex items-center space-x-2 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold text-[#4a3728] mb-4 md:mb-6">
             <span>Products</span>
             <ChevronRight size={10} />
-            <span className="text-[#24452d]/40">{category.name}</span>
+            <span className="text-[#4a3728]/40">{category.name}</span>
           </nav>
 
           <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold serif mb-4 md:mb-6">

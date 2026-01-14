@@ -29,10 +29,9 @@ const USPs: React.FC = () => {
   return (
     <section
       className="
-        bg-[#1e3023] py-10
+        bg-[#4a3728] py-10
         min-h-[15vh] md:min-h-0
         flex items-center justify-center
-
         px-4
         overflow-hidden
       "

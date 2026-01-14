@@ -6,7 +6,7 @@ const About: React.FC = () => {
       <section className="px-6 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-20 items-center">
           <div className="lg:w-1/2">
-            <span className="block text-[#8b5e3c] uppercase tracking-[0.3em] text-sm font-semibold opacity-0 animate-fade-up">
+            <span className="block text-[#4a3728] uppercase tracking-[0.3em] text-sm font-semibold opacity-0 animate-fade-up">
               Our Legacy
             </span>
 
@@ -37,7 +37,7 @@ const About: React.FC = () => {
               alt="Our Facility"
               className="rounded-3xl shadow-2xl relative z-10"
             />
-            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-[#8b5e3c]/10 rounded-full blur-3xl -z-0" />
+            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-[#4a3728]/10 rounded-full blur-3xl -z-0" />
             <div className="absolute -top-10 -right-10 w-48 h-48 bg-[#4a3728]/5 rounded-full blur-3xl -z-0" />
           </div>
         </div>
@@ -59,7 +59,7 @@ const About: React.FC = () => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className={`p-10 bg-white rounded-2xl border border-[#4a3728]/5 shadow-sm hover:shadow-md transition-shadow opacity-0 animate-fade-up`}
+              className="p-10 bg-white rounded-2xl border border-[#4a3728]/5 shadow-sm hover:shadow-md transition-shadow opacity-0 animate-fade-up"
               style={{ animationDelay: `${idx * 0.2}s` }}
             >
               <h3 className="text-2xl font-bold serif mb-4">{item.title}</h3>

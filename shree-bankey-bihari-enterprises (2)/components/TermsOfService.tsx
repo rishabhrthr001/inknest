@@ -4,7 +4,7 @@ const TermsOfService: React.FC = () => {
   return (
     <div className="pt-40 pb-32">
       <section className="px-6 max-w-4xl mx-auto">
-        <span className="text-[#8b5e3c] uppercase tracking-[0.3em] text-sm font-semibold opacity-0 animate-fade-in">
+        <span className="text-[#4a3728] uppercase tracking-[0.3em] text-sm font-semibold opacity-0 animate-fade-in">
           Legal
         </span>
 

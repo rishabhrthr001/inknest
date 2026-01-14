@@ -71,13 +71,11 @@ const Navbar: React.FC = () => {
   }) => (
     <button
       onClick={onClick}
-      className={`relative group px-2 py-2 transition-colors duration-300 ${
-        isActive ? "text-[#1e3023]" : "text-[#1e3023]"
-      }`}
+      className="relative group px-2 py-2 transition-colors duration-300 text-[#4a3728]"
     >
       {label}
       <div
-        className={`absolute bottom-0 left-0 h-[2px] bg-[#1e3023] transition-all duration-500 ${
+        className={`absolute bottom-0 left-0 h-[2px] bg-[#4a3728] transition-all duration-500 ${
           isActive ? "w-full" : "w-0 group-hover:w-full"
         }`}
       />
@@ -101,22 +99,21 @@ const Navbar: React.FC = () => {
         >
           {/* LEFT */}
           <div className="flex items-center space-x-6 md:space-x-4">
+            {/* LOGO */}
             <div
-              className="flex items-center cursor-pointer"
+              className="flex items-center cursor-pointer select-none"
               onClick={handleLogoClick}
             >
-              <img
-                src="/navBarLogoBg.png"
-                alt="Logo"
-                className="h-8 md:h-6 w-24"
-              />
+              <span className="text-xl md:text-lg font-bold tracking-widest text-[#4a3728] serif">
+                INKNEST
+              </span>
             </div>
 
             {/* MOBILE CATEGORY DROPDOWN */}
             <div className="relative md:hidden">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-1 text-sm text-[#1e3023]"
+                className="flex items-center space-x-1 text-sm text-[#4a3728]"
               >
                 <span>Categories</span>
                 <ChevronDown
@@ -135,7 +132,7 @@ const Navbar: React.FC = () => {
                       onClick={() => goToCategory(cat._id)}
                       className="w-full text-left px-5 py-3 text-sm
                                  transition-all duration-200
-                                 hover:bg-[#1e3023]/5 hover:translate-x-1"
+                                 hover:bg-[#4a3728]/5 hover:translate-x-1"
                     >
                       {cat.name}
                     </button>
@@ -146,7 +143,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* DESKTOP NAV */}
-          <div className="hidden md:flex items-center space-x-8 text-xs uppercase tracking-wide text-[#1e3023]">
+          <div className="hidden md:flex items-center space-x-8 text-xs uppercase tracking-wide text-[#4a3728]">
             <NavButton
               label="Home"
               onClick={handleLogoClick}
@@ -182,10 +179,10 @@ const Navbar: React.FC = () => {
                     className="group relative w-full text-left px-6 py-3.5 text-xs uppercase
                                flex items-center
                                transition-all duration-300 ease-out
-                               hover:bg-[#1e3023]/5"
+                               hover:bg-[#4a3728]/5"
                   >
                     <span
-                      className="absolute left-0 top-0 h-full w-[2px] bg-[#1e3023]
+                      className="absolute left-0 top-0 h-full w-[2px] bg-[#4a3728]
                                  scale-y-0 group-hover:scale-y-100
                                  transition-transform duration-300 origin-top"
                     />
@@ -205,7 +202,7 @@ const Navbar: React.FC = () => {
 
             <button
               onClick={() => scrollToSection("contact")}
-              className="px-6 py-2 bg-[#1e3023] text-white rounded-full hover:opacity-90 transition"
+              className="px-6 py-2 bg-[#4a3728] text-white rounded-full hover:opacity-90 transition"
             >
               Contact
             </button>
@@ -213,7 +210,7 @@ const Navbar: React.FC = () => {
 
           {/* MOBILE MENU BUTTON */}
           <button
-            className="md:hidden text-[#1e3023]"
+            className="md:hidden text-[#4a3728]"
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu />
@@ -229,7 +226,7 @@ const Navbar: React.FC = () => {
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl px-8 pt-6 pb-10 animate-slide-up text-[#1e3023]">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl px-8 pt-6 pb-10 animate-slide-up text-[#4a3728]">
             <div className="flex justify-between items-center mb-8">
               <span className="font-bold tracking-wide">Menu</span>
               <button onClick={() => setIsMobileMenuOpen(false)}>

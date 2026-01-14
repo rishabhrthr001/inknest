@@ -154,7 +154,7 @@ const AdminProducts: React.FC = () => {
       <div className="max-w-7xl mx-auto flex gap-8">
         {/* SIDEBAR */}
         <aside className="w-64 shrink-0">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#1e3023]/60 mb-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#4a3728]/60 mb-4">
             Categories
           </h3>
 
@@ -163,8 +163,8 @@ const AdminProducts: React.FC = () => {
               onClick={() => setActiveCategory("all")}
               className={`w-full text-left px-4 py-2 rounded-lg text-sm transition ${
                 activeCategory === "all"
-                  ? "bg-[#1e3023] text-white"
-                  : "text-[#1e3023] hover:bg-[#2f4a37]/5"
+                  ? "bg-[#4a3728] text-white"
+                  : "text-[#4a3728] hover:bg-[#4a3728]/5"
               }`}
             >
               All Products
@@ -176,8 +176,8 @@ const AdminProducts: React.FC = () => {
                 onClick={() => setActiveCategory(c._id)}
                 className={`w-full text-left px-4 py-2 rounded-lg text-sm transition ${
                   activeCategory === c._id
-                    ? "bg-[#1e3023] text-white"
-                    : "text-[#1e3023] hover:bg-[#2f4a37]/5"
+                    ? "bg-[#4a3728] text-white"
+                    : "text-[#4a3728] hover:bg-[#4a3728]/5"
                 }`}
               >
                 {c.name}
@@ -190,17 +190,17 @@ const AdminProducts: React.FC = () => {
         <section className="flex-1 space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold serif text-[#1e3023]">
+              <h2 className="text-2xl font-bold serif text-[#4a3728]">
                 Products
               </h2>
-              <p className="text-sm text-[#1e3023]/60">
+              <p className="text-sm text-[#4a3728]/60">
                 Products grouped by category
               </p>
             </div>
 
             <button
               onClick={() => setAdding(true)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#1e3023] text-white rounded-full hover:bg-[#2f4a37] text-sm"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#4a3728] text-white rounded-full hover:opacity-90 text-sm"
             >
               <Plus size={14} />
               Add Product
@@ -227,7 +227,7 @@ const AdminProducts: React.FC = () => {
                     <div className="flex gap-4 scale-95 group-hover:scale-100 transition">
                       <button
                         onClick={() => openEdit(p)}
-                        className="px-4 py-2 rounded-full bg-white text-[#1e3023] flex items-center gap-2"
+                        className="px-4 py-2 rounded-full bg-white text-[#4a3728] flex items-center gap-2"
                       >
                         <Edit2 size={14} /> Edit
                       </button>
@@ -243,10 +243,10 @@ const AdminProducts: React.FC = () => {
                 </div>
 
                 <div className="h-[15%] px-4 py-2">
-                  <h3 className="text-sm font-bold text-[#1e3023] truncate">
+                  <h3 className="text-sm font-bold text-[#4a3728] truncate">
                     {p.name}
                   </h3>
-                  <p className="text-xs text-[#1e3023]/60 line-clamp-1">
+                  <p className="text-xs text-[#4a3728]/60 line-clamp-1">
                     {p.description}
                   </p>
                 </div>
@@ -261,7 +261,7 @@ const AdminProducts: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
           <div className="bg-white w-full max-w-6xl rounded-3xl p-10 shadow-2xl">
             <div className="flex justify-between items-center mb-8">
-              <h3 className="text-3xl font-bold serif text-[#1e3023]">
+              <h3 className="text-3xl font-bold serif text-[#4a3728]">
                 {editing ? "Edit Product" : "Add Product"}
               </h3>
               <button
@@ -290,7 +290,10 @@ const AdminProducts: React.FC = () => {
                     />
                   ) : (
                     <label className="cursor-pointer text-center">
-                      <Upload size={40} className="mx-auto mb-3" />
+                      <Upload
+                        size={40}
+                        className="mx-auto mb-3 text-[#4a3728]/40"
+                      />
                       <input
                         type="file"
                         hidden
@@ -303,7 +306,7 @@ const AdminProducts: React.FC = () => {
                 </div>
 
                 {previews.length > 0 && previews.length < 3 && (
-                  <label className="mt-4 inline-flex items-center gap-2 text-sm cursor-pointer text-[#1e3023]">
+                  <label className="mt-4 inline-flex items-center gap-2 text-sm cursor-pointer text-[#4a3728]">
                     <Plus size={14} /> Add more images
                     <input
                       type="file"
@@ -363,7 +366,7 @@ const AdminProducts: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-full flex items-center justify-center gap-2 bg-[#1e3023] text-white hover:bg-[#2f4a37]"
+                  className="w-full py-4 rounded-full flex items-center justify-center gap-2 bg-[#4a3728] text-white hover:opacity-90"
                 >
                   <Save size={14} />
                   Save Product

@@ -33,7 +33,7 @@ const Categories: React.FC<CategoriesProps> = ({ onCategorySelect }) => {
     <section className="py-24 md:py-32 px-4 md:px-6 max-w-7xl mx-auto">
       {/* HEADER */}
       <div className="text-center mb-12 md:mb-20">
-        <span className="block text-[#1e3023] uppercase tracking-[0.3em] text-[10px] md:text-sm font-semibold opacity-0 animate-fade-up">
+        <span className="block text-[#4a3728] uppercase tracking-[0.3em] text-[10px] md:text-sm font-semibold opacity-0 animate-fade-up">
           Our Offerings
         </span>
 
@@ -68,12 +68,12 @@ const Categories: React.FC<CategoriesProps> = ({ onCategorySelect }) => {
             </h3>
 
             {/* DESCRIPTION */}
-            <p className="text-[#1e3023]/70 text-xs md:text-sm leading-relaxed line-clamp-2">
+            <p className="text-[#4a3728]/70 text-xs md:text-sm leading-relaxed line-clamp-2">
               {category.description}
             </p>
 
             {/* UNDERLINE */}
-            <div className="mt-3 md:mt-4 w-6 md:w-10 h-0.5 bg-[#1e3023] group-hover:w-full transition-all duration-700" />
+            <div className="mt-3 md:mt-4 w-6 md:w-10 h-0.5 bg-[#4a3728] group-hover:w-full transition-all duration-700" />
           </button>
         ))}
       </div>

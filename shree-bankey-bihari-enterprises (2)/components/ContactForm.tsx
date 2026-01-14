@@ -28,7 +28,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
   const triggerConfetti = () => {
     const duration = 1500;
     const end = Date.now() + duration;
-    const colors = ["#1e3023", "#2b2f2d", "#fdfbf7"];
+    const colors = ["#4a3728", "#2b2f2d", "#fdfbf7"];
 
     (function frame() {
       confetti({
@@ -94,7 +94,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20">
         {/* Left Content */}
         <div className="lg:w-1/3 animate-fade-up">
-          <span className="text-[#1e3023] uppercase tracking-[0.3em] text-sm font-semibold">
+          <span className="text-[#4a3728] uppercase tracking-[0.3em] text-sm font-semibold">
             Get In Touch
           </span>
 
@@ -102,33 +102,33 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
             Let's create something remarkable together.
           </h2>
 
-          <p className="text-[#1e3023]/70 mb-10 text-lg">
+          <p className="text-[#4a3728]/70 mb-10 text-lg">
             Whether you need custom branding or bulk packaging solutions, we are
             here to help your business grow.
           </p>
 
           <div className="space-y-6">
             <div>
-              <h4 className="font-bold text-[#1e3023] mb-1">Office Address</h4>
-              <p className="text-[#1e3023]/60">
+              <h4 className="font-bold text-[#4a3728] mb-1">Office Address</h4>
+              <p className="text-[#4a3728]/60">
                 L-1/109 Satsang Bhawan Road, Mohan garden, <br />
                 Uttam Nagar, New Delhi, India
               </p>
             </div>
 
             <div>
-              <h4 className="font-bold text-[#1e3023] mb-1">Inquiries</h4>
-              <p className="text-[#1e3023]/60">
+              <h4 className="font-bold text-[#4a3728] mb-1">Inquiries</h4>
+              <p className="text-[#4a3728]/60">
                 <a
                   href="mailto:contact@inknest.com"
-                  className="hover:text-[#1e3023] transition-colors"
+                  className="hover:text-[#4a3728] transition-colors"
                 >
                   contact@inknest.com
                 </a>
                 <br />
                 <a
                   href="tel:+919811544614"
-                  className="hover:text-[#1e3023] transition-colors"
+                  className="hover:text-[#4a3728] transition-colors"
                 >
                   +91-9811544614
                 </a>
@@ -138,21 +138,21 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
         </div>
 
         {/* Form */}
-        <div className="lg:w-2/3 bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-[#1e3023]/5 animate-fade-left">
+        <div className="lg:w-2/3 bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-[#4a3728]/5 animate-fade-left">
           <form
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
             {/* Name */}
             <div className="space-y-2">
-              <label className="text-xs uppercase tracking-widest font-bold text-[#1e3023]/40 ml-1">
+              <label className="text-xs uppercase tracking-widest font-bold text-[#4a3728]/40 ml-1">
                 Full Name
               </label>
               <input
                 required
                 type="text"
                 placeholder="Your Name"
-                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#1e3023]/20 outline-none"
+                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#4a3728]/20 outline-none"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -162,14 +162,14 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
 
             {/* Email */}
             <div className="space-y-2">
-              <label className="text-xs uppercase tracking-widest font-bold text-[#1e3023]/40 ml-1">
+              <label className="text-xs uppercase tracking-widest font-bold text-[#4a3728]/40 ml-1">
                 Email Address
               </label>
               <input
                 required
                 type="email"
                 placeholder="your-email@example.com"
-                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#1e3023]/20 outline-none"
+                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#4a3728]/20 outline-none"
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
@@ -179,14 +179,14 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
 
             {/* Phone */}
             <div className="space-y-2">
-              <label className="text-xs uppercase tracking-widest font-bold text-[#1e3023]/40 ml-1">
+              <label className="text-xs uppercase tracking-widest font-bold text-[#4a3728]/40 ml-1">
                 Phone Number
               </label>
               <input
                 required
                 type="tel"
                 placeholder="+91 98765 43210"
-                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#1e3023]/20 outline-none"
+                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#4a3728]/20 outline-none"
                 value={formData.phone}
                 onChange={(e) =>
                   setFormData({ ...formData, phone: e.target.value })
@@ -196,14 +196,14 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
 
             {/* Subject */}
             <div className="md:col-span-2 space-y-2">
-              <label className="text-xs uppercase tracking-widest font-bold text-[#1e3023]/40 ml-1">
+              <label className="text-xs uppercase tracking-widest font-bold text-[#4a3728]/40 ml-1">
                 Subject
               </label>
               <input
                 required
                 type="text"
                 placeholder="Bulk Order for Paper Bags"
-                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#1e3023]/20 outline-none"
+                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#4a3728]/20 outline-none"
                 value={formData.subject}
                 onChange={(e) =>
                   setFormData({ ...formData, subject: e.target.value })
@@ -213,14 +213,14 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
 
             {/* Message */}
             <div className="md:col-span-2 space-y-2">
-              <label className="text-xs uppercase tracking-widest font-bold text-[#1e3023]/40 ml-1">
+              <label className="text-xs uppercase tracking-widest font-bold text-[#4a3728]/40 ml-1">
                 Your Message
               </label>
               <textarea
                 required
                 rows={4}
                 placeholder="Tell us about your requirements..."
-                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#1e3023]/20 outline-none resize-none"
+                className="w-full bg-[#fdfbf7] rounded-xl p-4 focus:ring-2 focus:ring-[#4a3728]/20 outline-none resize-none"
                 value={formData.message}
                 onChange={(e) =>
                   setFormData({ ...formData, message: e.target.value })
@@ -235,8 +235,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
                 disabled={isSubmitted}
                 className={`px-12 py-4 rounded-full flex items-center justify-center gap-3 transition-all ${
                   isSubmitted
-                    ? "bg-[#1e3023] text-white"
-                    : "bg-[#1e3023] text-white hover:opacity-90"
+                    ? "bg-[#4a3728] text-white"
+                    : "bg-[#4a3728] text-white hover:opacity-90"
                 }`}
               >
                 {isSubmitted ? (
