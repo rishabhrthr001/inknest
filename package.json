@@ -1,0 +1,26 @@
+{
+    "name": "inknest",
+    "version": "1.0.0",
+    "description": "InkNest - Product showcase website with React frontend and Express backend",
+    "scripts": {
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "dev:frontend": "cd frontend && npm run dev",
+        "dev:backend": "cd backend && npm run dev",
+        "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+        "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+        "start:frontend": "cd frontend && npm run preview",
+        "start:backend": "cd backend && npm start",
+        "build": "cd frontend && npm run build"
+    },
+    "keywords": [
+        "react",
+        "express",
+        "mongodb",
+        "cloudinary"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}

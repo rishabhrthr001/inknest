@@ -30,126 +30,47 @@ JWT Authentication
 Cloudinary
 REST APIs
 
-📁 Project Structure
+## 📁 Project Structure
 
 ```
 inknest/
-├── frontend/
+├── frontend/          # React + Vite (previously shree-bankey-bihari...)
 │   ├── src/
-│   ├── public/
-│   ├── index.html
-│   ├── vite.config.ts
+│   ├── dist/          # Production build
+│   └── .env.local
+├── backend/           # Node.js + Express (previously server)
+│   ├── models/
+│   ├── routes/
+│   ├── server.js      # Updated to serve frontend in production
 │   └── .env
+├── package.json       # Root config to run both concurrently
+└── DEPLOYMENT.md      # Deployment instructions for Oracle Cloud
 ```
 
-├── backend/
-│ ├── src/
-│ ├── models/
-│ ├── routes/
-│ ├── controllers/
-│ ├── middleware/
-│ ├── server.js
-│ └── .env
-│
-└── README.md
+## 🚀 Getting Started
 
-🚀 Getting Started
-
-1️⃣ Clone the repository
-
-```
-git clone https://github.com/rishabhrthr001/inknest.git
-cd inknest
+### 1️⃣ Installation
+Install dependencies for **root**, **frontend**, and **backend** in one go:
+```bash
+npm install && npm run install:all
 ```
 
-⚙️ Backend Setup
-📦 Install dependencies
-
-```
-cd backend
-npm install
-```
-
-🔐 Backend .env structure
-
-Create a .env file inside the backend folder:
-
-```
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/<db_name>
-JWT_SECRET=your_jwt_secret
-PORT=3000
-
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloudname
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-```
-
-▶️ Run backend server
-
-```
-npm run dev
-or
-npm start
-```
-
-Backend will run on:
-
-```
-
-http://localhost:3000
-```
-
-🎨 Frontend Setup
-📦 Install dependencies
-
-```
-cd ../frontend
-
-npm install
-```
-
-🔐 Frontend .env structure
-
-Create a .env file inside the frontend folder:
-
-```
-VITE_API_URL=your backend hosted url
-
-VITE_EMAILJS_SERVICE_ID=service_tmtu23f
-VITE_EMAILJS_TEMPLATE_ID=template_jbsyaz4
-VITE_EMAILJS_PUBLIC_KEY=TLMkuF9GHIYu5THNF
-```
-
-▶️ Run frontend
-
-```
+### 2️⃣ Development
+Start **both** Frontend (Port 3000) and Backend (Port 3001) with one command:
+```bash
 npm run dev
 ```
 
-Frontend will run on:
-
+### 3️⃣ Build for Production
+```bash
+npm run build
 ```
+This builds the React app into `frontend/dist`. In production code, the Backend serves these static files.
 
-http://localhost:5173
-```
+---
 
-🔄 Running Both Together
-
-Open two terminals:
-
-Terminal 1 (Backend)
-
-```
-cd backend
-npm run dev
-```
-
-Terminal 2 (Frontend)
-
-```
-cd frontend
-npm run dev
-```
+## ☁️ Deployment
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for full details on hosting this app on Oracle Cloud.
 
 🎨 Branding & Assets
 
