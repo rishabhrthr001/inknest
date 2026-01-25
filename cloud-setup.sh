@@ -111,13 +111,13 @@ PACKAGEJSON
 
 # Create .env file
 cat > backend/.env << 'ENVFILE'
-MONGO_URI=mongodb+srv://rishabhrthr001_db_user:bCoouyntHMLtYsXT@cluster0.tefbat0.mongodb.net/
-JWT_SECRET=9f4c8e2b7a6d1e0c3f9b5a4e8d7c2b1a0f6e5d4c9b8a7e6f5a4d3c2b1e0
+MONGO_URI=
+JWT_SECRET=
 PORT=80
 NODE_ENV=production
-CLOUDINARY_CLOUD_NAME=dbuffe3zo
-CLOUDINARY_API_KEY=791548488748899
-CLOUDINARY_API_SECRET=BxrKuC7lNxGWn3k4SJzJslZDf1E
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ENVFILE
 
 echo "⚠️  NOTE: You need to upload your full project files!"
