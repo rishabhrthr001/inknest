@@ -48,6 +48,9 @@ app.use("/api", fetchCatRoute);
 app.use("/api", fetchProRoute);
 app.use("/add", productRoute);
 
+// Serve static files
+app.use(express.static("frontend/dist"));
+
 // Serve static files in production
 
 
