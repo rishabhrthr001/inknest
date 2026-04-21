@@ -1,20 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Category } from "../types";
 import axios from "axios";
 import API from "@/services/api";
+import { ArrowUpRight } from "lucide-react";
 
-// Optimize Cloudinary images with auto quality, format and resize
+// Optimize Cloudinary images
 const getOptimizedImage = (url: string) => {
   if (!url || !url.includes("cloudinary.com")) return url;
-  return url.replace("/upload/", "/upload/q_auto,f_auto,w_400/");
+  return url.replace("/upload/", "/upload/q_auto,f_auto,w_600/");
 };
 
 interface CategoriesProps {
   onCategorySelect: (id: string) => void;
 }
 
+// Custom hook – fires once when element enters viewport
+function useScrollReveal<T extends HTMLElement>(threshold = 0.15) {
+  const ref = useRef<T>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, visible };
+}
+
 const Categories: React.FC<CategoriesProps> = ({ onCategorySelect }) => {
   const [data, setData] = useState<Category[]>([]);
+
+  const { ref: headingRef, visible: headingVisible } =
+    useScrollReveal<HTMLDivElement>(0.2);
+  const { ref: gridRef, visible: gridVisible } =
+    useScrollReveal<HTMLDivElement>(0.1);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -26,7 +56,6 @@ const Categories: React.FC<CategoriesProps> = ({ onCategorySelect }) => {
         setData([]);
       }
     };
-
     fetchCategories();
   }, []);
 
@@ -36,51 +65,88 @@ const Categories: React.FC<CategoriesProps> = ({ onCategorySelect }) => {
   };
 
   return (
-    <section className="py-24 md:py-32 px-4 md:px-6 max-w-7xl mx-auto">
-      {/* HEADER */}
-      <div className="text-center mb-12 md:mb-20">
-        <span className="block text-[#4a3728] uppercase tracking-[0.3em] text-[10px] md:text-sm font-semibold opacity-0 animate-fade-up">
-          Our Offerings
-        </span>
+    <section className="cat-section">
+      {/* ── BACKGROUND TEXTURE ── */}
+      <div className="cat-bg-grain" aria-hidden />
 
-        <h2 className="text-3xl md:text-5xl font-bold mt-3 md:mt-4 serif opacity-0 animate-fade-up delay-200">
-          Product Categories
+      {/* ── SECTION HEADER ── */}
+      <div
+        ref={headingRef}
+        className={`cat-header ${headingVisible ? "cat-reveal" : "cat-hidden"}`}
+      >
+        {/* Decorative rule */}
+        <div className="cat-rule-wrap">
+          <span className="cat-rule" />
+          <span className="cat-eyebrow">Our Collections</span>
+          <span className="cat-rule" />
+        </div>
+
+        <h2 className="cat-title serif">
+          Crafted for Every&nbsp;
+          <em className="cat-title-accent">Brand Story</em>
         </h2>
+
+        <p className="cat-subtitle">
+          Premium packaging & print solutions — tailored to make your brand
+          impossible to ignore.
+        </p>
       </div>
 
-      {/* GRID */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+      {/* ── PRODUCT GRID ── */}
+      <div ref={gridRef} className="cat-grid">
         {data.map((category, idx) => (
           <button
             key={category._id}
             onClick={() => handleCategoryClick(category.slug || category._id)}
-            className="group text-left cursor-pointer opacity-0 animate-fade-up focus:outline-none"
-            style={{ animationDelay: `${idx * 0.15}s` }}
+            className={`cat-card focus:outline-none ${
+              gridVisible ? "cat-card-reveal" : "cat-card-hidden"
+            }`}
+            style={
+              gridVisible
+                ? { transitionDelay: `${idx * 120}ms` }
+                : undefined
+            }
           >
-            {/* IMAGE */}
-            <div className="relative overflow-hidden aspect-[4/5] rounded-xl md:rounded-2xl mb-3 md:mb-6 shadow-sm">
+            {/* ── IMAGE WRAPPER ── */}
+            <div className="cat-img-wrap">
               <img
                 src={getOptimizedImage(category.image)}
                 alt={category.name}
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                className="cat-img"
                 loading="lazy"
                 draggable={false}
               />
-              <div className="absolute inset-0 bg-[#2b2f2d]/20 group-hover:bg-[#2b2f2d]/0 transition-colors duration-500" />
+
+              {/* Gradient overlay – always visible, deepens on hover */}
+              <div className="cat-gradient" />
+
+              {/* Hover reveal overlay */}
+              <div className="cat-hover-overlay">
+                <span className="cat-explore-btn">
+                  <ArrowUpRight size={18} />
+                  Explore
+                </span>
+              </div>
+
+              {/* Index badge */}
+              <span className="cat-index-badge">
+                {String(idx + 1).padStart(2, "0")}
+              </span>
             </div>
 
-            {/* TITLE */}
-            <h3 className="text-sm md:text-2xl font-bold mb-1 md:mb-3 serif">
-              {category.name}
-            </h3>
+            {/* ── CARD BODY ── */}
+            <div className="cat-card-body">
+              <div className="cat-card-text">
+                <h3 className="cat-card-title serif">{category.name}</h3>
+                <p className="cat-card-desc">{category.description}</p>
+              </div>
 
-            {/* DESCRIPTION */}
-            <p className="text-[#4a3728]/70 text-xs md:text-sm leading-relaxed line-clamp-2">
-              {category.description}
-            </p>
-
-            {/* UNDERLINE */}
-            <div className="mt-3 md:mt-4 w-6 md:w-10 h-0.5 bg-[#4a3728] group-hover:w-full transition-all duration-700" />
+              {/* Animated underline */}
+              <div className="cat-underline-wrap">
+                <span className="cat-underline-track" />
+                <span className="cat-underline-fill" />
+              </div>
+            </div>
           </button>
         ))}
       </div>

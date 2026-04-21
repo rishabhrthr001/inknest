@@ -69,7 +69,7 @@ const PrivacyPolicy: React.FC = () => {
               If you have any questions about our Privacy Policy or the
               practices of this site, please contact us at{" "}
               <span className="font-medium text-[#4a3728]">
-                privacy@shreebbent.com
+                 contact@inknest.in
               </span>
               .
             </p>

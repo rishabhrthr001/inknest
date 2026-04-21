@@ -5,7 +5,6 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-
 router.post("/register", async (req, res) => {
   try {
     const { username, password, role } = req.body;
@@ -74,7 +73,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.status(200).json({

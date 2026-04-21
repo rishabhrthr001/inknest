@@ -6,9 +6,13 @@ import toast from "react-hot-toast";
 
 interface ContactFormProps {
   initialSubject?: string;
+  isInModal?: boolean;
 }
 
-const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
+const ContactForm: React.FC<ContactFormProps> = ({ 
+  initialSubject = "", 
+  isInModal = false 
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -90,55 +94,57 @@ const ContactForm: React.FC<ContactFormProps> = ({ initialSubject = "" }) => {
   };
 
   return (
-    <section id="contact" className="py-32 px-6 bg-[#fdfbf7]">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20">
+    <section id="contact" className={`${isInModal ? "py-8" : "py-32"} px-6 bg-[#fdfbf7]`}>
+      <div className={`max-w-7xl mx-auto flex flex-col ${isInModal ? "" : "lg:flex-row"} gap-20`}>
         {/* Left Content */}
-        <div className="lg:w-1/3 animate-fade-up">
-          <span className="text-[#4a3728] uppercase tracking-[0.3em] text-sm font-semibold">
-            Get In Touch
-          </span>
+        {!isInModal && (
+          <div className="lg:w-1/3 animate-fade-up">
+            <span className="text-[#4a3728] uppercase tracking-[0.3em] text-sm font-semibold">
+              Get In Touch
+            </span>
 
-          <h2 className="text-4xl md:text-5xl font-bold mt-4 serif mb-8 leading-tight">
-            Let's create something remarkable together.
-          </h2>
+            <h2 className="text-4xl md:text-5xl font-bold mt-4 serif mb-8 leading-tight">
+              Let's create something remarkable together.
+            </h2>
 
-          <p className="text-[#4a3728]/70 mb-10 text-lg">
-            Whether you need custom branding or bulk packaging solutions, we are
-            here to help your business grow.
-          </p>
+            <p className="text-[#4a3728]/70 mb-10 text-lg">
+              Whether you need custom branding or bulk packaging solutions, we are
+              here to help your business grow.
+            </p>
 
-          <div className="space-y-6">
-            <div>
-              <h4 className="font-bold text-[#4a3728] mb-1">Office Address</h4>
-              <p className="text-[#4a3728]/60">
-                L-1/109 Satsang Bhawan Road, Mohan garden, <br />
-                Uttam Nagar, New Delhi, India
-              </p>
-            </div>
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-bold text-[#4a3728] mb-1">Office Address</h4>
+                <p className="text-[#4a3728]/60">
+                  L-1/109 Satsang Bhawan Road, Mohan garden, <br />
+                  Uttam Nagar, New Delhi, India
+                </p>
+              </div>
 
-            <div>
-              <h4 className="font-bold text-[#4a3728] mb-1">Inquiries</h4>
-              <p className="text-[#4a3728]/60">
-                <a
-                  href="mailto:contact@inknest.com"
-                  className="hover:text-[#4a3728] transition-colors"
-                >
-                  contact@inknest.com
-                </a>
-                <br />
-                <a
-                  href="tel:+919811544614"
-                  className="hover:text-[#4a3728] transition-colors"
-                >
-                  +91-9811544614
-                </a>
-              </p>
+              <div>
+                <h4 className="font-bold text-[#4a3728] mb-1">Inquiries</h4>
+                <p className="text-[#4a3728]/60">
+                  <a
+                    href="mailto:contact@inknest.com"
+                    className="hover:text-[#4a3728] transition-colors"
+                  >
+                    contact@inknest.com
+                  </a>
+                  <br />
+                  <a
+                    href="tel:+919289300497"
+                    className="hover:text-[#4a3728] transition-colors"
+                  >
+                    +91-9289300497
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Form */}
-        <div className="lg:w-2/3 bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-[#4a3728]/5 animate-fade-left">
+        <div className={`${isInModal ? "w-full" : "lg:w-2/3"} bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-[#4a3728]/5 animate-fade-left`}>
           <form
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-2 gap-8"

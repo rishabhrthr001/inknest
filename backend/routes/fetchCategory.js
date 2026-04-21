@@ -30,7 +30,9 @@ router.get("/categories/:id", async (req, res) => {
     if (!category) {
       // Fallback: If searching by slug failed, try basic name match as last resort
       if (!isValidObjectId(id)) {
-        const catByName = await Category.findOne({ name: { $regex: new RegExp(`^${id}$`, 'i') } });
+        const catByName = await Category.findOne({
+          name: { $regex: new RegExp(`^${id}$`, "i") },
+        });
         if (catByName) return res.json(catByName);
       }
       return res.status(404).json({ msg: "Category not found" });

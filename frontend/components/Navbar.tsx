@@ -93,8 +93,11 @@ const Navbar: React.FC = () => {
       <nav className="fixed top-0 left-0 w-full z-50 flex justify-center p-4 md:p-6 pointer-events-none">
         <div
           className={`pointer-events-auto w-full max-w-5xl flex items-center justify-between px-6 md:px-8 py-3 md:py-4 rounded-full transition-all duration-500
-          backdrop-blur-md bg-white/60
-          ${isScrolled ? "shadow-lg bg-white/80 py-2 md:py-3" : ""}`}
+          backdrop-blur-md
+          ${(!isHome || isScrolled) 
+            ? "shadow-lg bg-white/90 border border-[#4a3728]/5 py-2 md:py-3" 
+            : "bg-white/40 mb-4"}
+          `}
         >
           {/* LEFT */}
           <div className="flex items-center space-x-6 md:space-x-4">

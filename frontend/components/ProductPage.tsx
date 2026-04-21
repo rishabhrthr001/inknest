@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronRight, ArrowLeft, ShoppingBag } from "lucide-react";
+import { ChevronRight, ArrowLeft, ShoppingBag, X, Check } from "lucide-react";
 import axios from "axios";
 import { Product, Category } from "../types";
 import API from "@/services/api";
 import Loader from "./Loader";
-import ProductEnquiryModal from "./ProductEnquiryModal";
+import ContactForm from "./ContactForm";
 
 const getOptimizedImage = (url: string) => {
   if (!url || !url.includes("cloudinary.com")) return url;
-  return url.replace("/upload/", "/upload/q_auto,f_auto,w_1200/");
+  return url.replace("/upload/", "/upload/q_auto,f_auto,w_1000/"); // High res
 };
 
 const ProductPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -23,162 +23,176 @@ const ProductPage: React.FC = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const [isZooming, setIsZooming] = useState(false);
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  const [enquireOpen, setEnquireOpen] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
 
-  /* ---------- FETCH PRODUCT + CATEGORY ---------- */
   useEffect(() => {
-    if (!slug) return;
-
-    const fetchProduct = async () => {
+    if (!id) return;
+    const fetchData = async () => {
       try {
         setLoading(true);
-
-        const productRes = await axios.get(`${API}/api/products/${slug}`);
-        const prod: Product = productRes.data;
+        const [prodRes] = await Promise.all([
+          axios.get(`${API}/api/products/${id}`)
+        ]);
+        const prod = prodRes.data;
         setProduct(prod);
 
-        const categoryRes = await axios.get(
-          `${API}/api/categories/${prod.categoryId}`,
-        );
-        setCategory(categoryRes.data);
+        const catRes = await axios.get(`${API}/api/categories/${prod.categoryId}`);
+        setCategory(catRes.data);
 
         window.scrollTo({ top: 0, left: 0 });
         setActiveImageIndex(0);
+        setTimeout(() => setIsLoaded(true), 150);
       } catch (err) {
-        console.error("Failed to load product page", err);
-        setProduct(null);
-        setCategory(null);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchProduct();
-  }, [slug]);
+    fetchData();
+  }, [id]);
 
   if (loading) return <Loader fullScreen />;
-
-  if (!product || !category) {
-    return (
-      <div className="pt-40 text-center serif text-2xl">Product not found.</div>
-    );
-  }
+  if (!product || !category) return <div className="pt-40 text-center serif text-2xl">Product not found.</div>;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+    if (!imageRef.current) return;
+    const rect = imageRef.current.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    setZoomPos({
-      x: Math.min(Math.max(x, 0), 100),
-      y: Math.min(Math.max(y, 0), 100),
-    });
+    setZoomPos({ x, y });
   };
 
   return (
-    <>
-      <div className="pt-40 pb-32">
-        <div className="px-6 max-w-7xl mx-auto">
-          {/* ---------- BREADCRUMB ---------- */}
-          <div className="flex items-center justify-between mb-12">
-            <button
-              onClick={() =>
-                navigate(`/category/${category.slug || category._id}`)
-              }
-              className="flex items-center space-x-2 text-xs uppercase tracking-widest font-bold text-[#4a3728]/60 hover:text-[#4a3728] transition"
+    <div className="min-h-screen bg-[#fdfbf7] pt-28 md:pt-40 pb-20">
+      <div className="max-w-7xl mx-auto px-6">
+        
+        {/* --- Back & Breadcrumb --- */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 md:mb-16">
+          <button
+            onClick={() => navigate(`/category/${category.slug || category._id}`, { state: { scrollTo: "products" } })}
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#4a3728]/50 hover:text-[#4a3728] transition-colors"
+          >
+            <ArrowLeft size={14} />
+            <span>Back to Collections</span>
+          </button>
+          <nav className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#4a3728]/30">
+            <span className="text-[#4a3728]/60">{category.name}</span>
+            <ChevronRight size={10} />
+            <span className="text-[#4a3728]">{product.name}</span>
+          </nav>
+        </div>
+
+        {/* --- MAIN CONTENT: Gallery(Sticky) + Details(Scrollable) --- */}
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
+          
+          {/* LEFT: GALLERY (STICKY) */}
+          {/* width decreased to lg:w-[50%] for better balance */}
+          <div className="w-full lg:w-[50%] lg:sticky lg:top-32 space-y-6">
+            <div
+              ref={imageRef}
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setIsZooming(true)}
+              onMouseLeave={() => setIsZooming(false)}
+              className="relative aspect-square md:aspect-[4/5] rounded-3xl overflow-hidden bg-white border border-[#4a3728]/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-crosshair"
             >
-              <ArrowLeft size={16} />
-              <span>Back to {category.name}</span>
-            </button>
+              <img
+                src={getOptimizedImage(product.images[activeImageIndex])}
+                alt={product.name}
+                className={`w-full h-full object-cover transition-transform duration-300 ${isZooming ? "scale-150" : "scale-100"}`}
+                style={{ transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` }}
+                draggable={false}
+              />
+              <div className="absolute top-6 left-6 w-8 h-px bg-black/10" />
+              <div className="absolute top-6 left-6 h-8 w-px bg-black/10" />
+            </div>
 
-            <nav className="hidden md:flex items-center space-x-2 text-xs uppercase tracking-[0.2em] font-bold text-[#4a3728]">
-              <span>Products</span>
-              <ChevronRight size={12} />
-              <span className="text-[#4a3728]/60">{category.name}</span>
-              <ChevronRight size={12} />
-              <span className="text-[#4a3728]">{product.name}</span>
-            </nav>
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
-            {/* ---------- IMAGES ---------- */}
-            <div className="lg:w-1/2 space-y-6">
-              <div
-                className="relative aspect-square rounded-3xl overflow-hidden bg-white border border-[#4a3728]/5 shadow-sm cursor-crosshair"
-                onMouseMove={handleMouseMove}
-                onMouseEnter={() => setIsZooming(true)}
-                onMouseLeave={() => setIsZooming(false)}
-              >
-                <img
-                  src={getOptimizedImage(product.images[activeImageIndex])}
-                  alt={product.name}
-                  className={`w-full h-full object-cover transition-transform duration-300 ${
-                    isZooming ? "scale-150" : "scale-100"
-                  }`}
-                  style={{
-                    transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                  }}
-                  draggable={false}
-                />
-              </div>
-
-              {/* THUMBNAILS */}
-              <div className="flex space-x-4 overflow-x-auto pb-2">
+            {/* Thumbnails */}
+            {product.images.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`w-24 aspect-square rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
-                      activeImageIndex === idx
-                        ? "border-[#4a3728]"
-                        : "border-transparent opacity-60 hover:opacity-100"
-                    }`}
+                    className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${activeImageIndex === idx ? "border-[#4a3728]" : "border-transparent opacity-50"}`}
                   >
-                    <img
-                      src={getOptimizedImage(img)}
-                      alt=""
-                      className="w-full h-full object-cover"
-                      draggable={false}
-                    />
+                    <img src={getOptimizedImage(img)} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* ---------- DETAILS ---------- */}
-            <div className="lg:w-1/2 flex flex-col justify-center">
-              <span className="text-[#4a3728] font-bold text-xs uppercase tracking-[0.3em] mb-4">
-                {category.name}
-              </span>
+          {/* RIGHT: DETAILS (SCROLLABLE) */}
+          <div className="w-full lg:w-[50%] flex flex-col pt-2 lg:pb-12">
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#c4966a] mb-3">
+              {category.name}
+            </span>
 
-              <h1 className="text-4xl md:text-6xl font-bold serif mb-8">
-                {product.name}
-              </h1>
+            <h1 className="serif text-4xl md:text-6xl font-bold text-[#1a1512] mb-8 leading-[1.1]">
+              {product.name}
+            </h1>
 
-              <p className="text-[#4a3728]/70 text-lg leading-relaxed mb-10 whitespace-pre-line">
-                {product.description}
+            {/* DESCRIPTION IS NOW FIRST AS REQUESTED */}
+            <div className="bg-[#4a3728]/[0.02] border-l-2 border-[#c4966a]/20 p-8 mb-10">
+              <p className="text-[#4a3728]/80 text-lg leading-[1.8] whitespace-pre-line italic">
+                "{product.description}"
               </p>
-
-              <button
-                onClick={() => setEnquireOpen(true)}
-                className="px-10 py-5 bg-[#4a3728] text-white rounded-full font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-all flex items-center space-x-3 w-fit"
-              >
-                <ShoppingBag size={16} />
-                <span>Enquire for Bulk</span>
-              </button>
             </div>
+
+            {/* CTA BUTTON */}
+            <button
+              onClick={() => setIsEnquiryModalOpen(true)}
+              className="group flex items-center justify-center gap-3 px-12 py-6 bg-[#4a3728] text-white rounded-full font-bold uppercase tracking-widest text-xs hover:shadow-xl transition-all w-full sm:w-fit mb-12"
+            >
+              <ShoppingBag size={18} />
+              <span>Request Quote</span>
+            </button>
+
+            {/* FEATURES GRID */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12 pt-10 border-t border-[#4a3728]/5">
+              {[
+                { t: "Custom Sizing", d: "Tailored to your dimensions" },
+                { t: "Material Selection", d: "Standard to Luxury grades" },
+                { t: "Bulk Logistics", d: "PAN-India door delivery" },
+                { t: "Branding", d: "Gold Foiling, Embossing & more" }
+              ].map((f, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="mt-1 w-5 h-5 rounded-full bg-[#4a3728]/5 flex items-center justify-center shrink-0">
+                    <Check size={10} className="text-[#4a3728]" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#4a3728] mb-1">{f.t}</h4>
+                    <p className="text-xs text-[#4a3728]/50">{f.d}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-[9px] uppercase tracking-widest text-[#4a3728]/30 font-medium italic">
+              * minimum order quantities apply based on customization complexity
+            </p>
           </div>
         </div>
       </div>
 
-      {/* ---------- ENQUIRY MODAL ---------- */}
-      <ProductEnquiryModal
-        isOpen={enquireOpen}
-        onClose={() => setEnquireOpen(false)}
-        productName={product.name}
-      />
-    </>
+      {/* MODAL */}
+      {isEnquiryModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="relative bg-[#fdfbf7] w-full max-w-3xl rounded-[2rem] overflow-hidden animate-fade-scale shadow-2xl">
+            <div className="flex items-center justify-between p-8 border-b border-[#4a3728]/5">
+              <h3 className="serif text-2xl font-bold">Enquire for {product.name}</h3>
+              <button onClick={() => setIsEnquiryModalOpen(false)} className="p-2 hover:bg-black/5 rounded-full"><X size={24}/></button>
+            </div>
+            <div className="p-8 max-h-[70vh] overflow-y-auto">
+              <ContactForm initialSubject={`Enquiry: ${product.name}`} isInModal />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
