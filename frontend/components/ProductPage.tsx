@@ -13,7 +13,7 @@ const getOptimizedImage = (url: string) => {
 };
 
 const ProductPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -29,30 +29,38 @@ const ProductPage: React.FC = () => {
   const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!id) return;
-    const fetchData = async () => {
+    if (!slug) return;
+
+    const fetchProduct = async () => {
       try {
         setLoading(true);
-        const [prodRes] = await Promise.all([
-          axios.get(`${API}/api/products/${id}`)
-        ]);
-        const prod = prodRes.data;
+        setIsLoaded(false);
+
+        const productRes = await axios.get(`${API}/api/products/${slug}`);
+        const prod: Product = productRes.data;
         setProduct(prod);
 
-        const catRes = await axios.get(`${API}/api/categories/${prod.categoryId}`);
-        setCategory(catRes.data);
+        const categoryRes = await axios.get(
+          `${API}/api/categories/${prod.categoryId}`,
+        );
+        setCategory(categoryRes.data);
 
         window.scrollTo({ top: 0, left: 0 });
         setActiveImageIndex(0);
-        setTimeout(() => setIsLoaded(true), 150);
+        
+        // Trigger entry animations
+        setTimeout(() => setIsLoaded(true), 100);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load product page", err);
+        setProduct(null);
+        setCategory(null);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [id]);
+
+    fetchProduct();
+  }, [slug]);
 
   if (loading) return <Loader fullScreen />;
   if (!product || !category) return <div className="pt-40 text-center serif text-2xl">Product not found.</div>;

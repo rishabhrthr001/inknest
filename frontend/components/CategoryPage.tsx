@@ -4,31 +4,45 @@ import { ArrowLeft, ArrowUpRight, ChevronRight } from "lucide-react";
 import axios from "axios";
 import { Category, Product } from "../types";
 import API from "@/services/api";
-import Loader from "./Loader";
 
 const getOptimizedImage = (url: string) => {
   if (!url || !url.includes("cloudinary.com")) return url;
   return url.replace("/upload/", "/upload/q_auto,f_auto,w_800/");
 };
 
-/* Card width breakpoints — matches scoped style */
 const getCardWidth = (): string => {
   const w = window.innerWidth;
   if (w >= 1280) return "270px";
   if (w >= 1024) return "252px";
   if (w >= 768)  return "230px";
   if (w >= 640)  return "210px";
-  return ""; // mobile: handled by CSS calc below
+  return ""; 
 };
 
+/* --- Skeleton Component --- */
+const CategorySkeleton = () => (
+  <div className="pt-40 px-6 max-w-7xl mx-auto animate-pulse">
+    <div className="h-4 w-32 bg-gray-200 rounded-full mb-8" />
+    <div className="h-16 w-64 bg-gray-200 rounded-2xl mb-6" />
+    <div className="h-6 w-full max-w-md bg-gray-200 rounded-lg mb-16" />
+    <div className="flex flex-wrap justify-center gap-6">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="w-[250px] aspect-[4/5] bg-gray-100 rounded-[2rem]" />
+      ))}
+    </div>
+  </div>
+);
+
 const CategoryPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [category, setCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [headerVisible, setHeaderVisible] = useState(false);
   const [gridVisible, setGridVisible] = useState(false);
   const [cardWidth, setCardWidth] = useState<string>(getCardWidth());
@@ -36,14 +50,12 @@ const CategoryPage: React.FC = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const gridRef   = useRef<HTMLDivElement>(null);
 
-  /* ── Responsive card width ── */
   useEffect(() => {
     const update = () => setCardWidth(getCardWidth());
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  /* ── Scroll-reveal ── */
   useEffect(() => {
     const observe = (el: HTMLElement | null, cb: () => void) => {
       if (!el) return;
@@ -54,225 +66,156 @@ const CategoryPage: React.FC = () => {
       io.observe(el);
       return () => io.disconnect();
     };
-    const c1 = observe(headerRef.current, () => setHeaderVisible(true));
-    const c2 = observe(gridRef.current, () => setGridVisible(true));
-    return () => { c1?.(); c2?.(); };
+    if (!loading) {
+      observe(headerRef.current, () => setHeaderVisible(true));
+      observe(gridRef.current, () => setGridVisible(true));
+    }
   }, [loading]);
 
-  /* ── Data fetch ── */
   useEffect(() => {
-    if (!id) return;
+    if (!slug) return;
+
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [categoryRes, productsRes] = await Promise.all([
-          axios.get(`${API}/api/categories/${id}`),
-          axios.get(`${API}/api/products`, { params: { categoryId: id } }),
-        ]);
-        setCategory(categoryRes.data);
-        setProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
-      } catch (err) {
-        console.error("Failed to load category page", err);
-        setCategory(null);
-        setProducts([]);
+        setError(null);
+
+        // Fetch Category First
+        const catRes = await axios.get(`${API}/api/categories/${slug}`);
+        const cat = catRes.data;
+        setCategory(cat);
+
+        // Fetch Products using the actual Category ID from the response (safer than using the slug)
+        const prodRes = await axios.get(`${API}/api/products`, { 
+          params: { categoryId: cat._id } 
+        });
+        
+        setProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
+      } catch (err: any) {
+        console.error("Fetch failed:", err);
+        setError(err.message || "Something went wrong while loading products.");
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
-  }, [id]);
+  }, [slug]);
 
   useEffect(() => {
     const scrollTarget = location.state?.scrollTo;
     if (scrollTarget) {
       setTimeout(() => {
         document.getElementById(scrollTarget)?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-      window.history.replaceState({}, document.title);
+      }, 500);
     }
-  }, [location.state]);
+  }, [location.state, loading]);
 
-  if (loading) return <Loader fullScreen />;
+  if (loading) return <CategorySkeleton />;
 
-  if (!category) {
+  if (error || !category) {
     return (
-      <div className="pt-32 text-center text-xl serif text-[#4a3728]">
-        Category not found.
+      <div className="pt-40 text-center px-6">
+        <h2 className="serif text-3xl mb-4 text-[#4a3728]">Oops! {error ? "Error loading products" : "Category not found"}</h2>
+        <p className="text-[#4a3728]/60 mb-8">{error || "We couldn't find the collection you're looking for."}</p>
+        <button onClick={() => navigate("/")} className="px-8 py-3 bg-[#4a3728] text-white rounded-full font-bold uppercase tracking-widest text-xs">
+          Return Home
+        </button>
       </div>
     );
   }
 
-  /* On mobile, cards fill 50% of the row minus the gap */
-  const isMobile = !cardWidth; // empty string = mobile
-  const cardStyle: React.CSSProperties = isMobile
-    ? { width: "calc(50% - 8px)", flexShrink: 0 }
-    : { width: cardWidth, flexShrink: 0 };
-
   return (
-    <div className="min-h-screen bg-[#fdfbf7]">
-
-      {/* ─── HEADER ─── */}
-      <section className="max-w-7xl mx-auto px-5 md:px-10 pt-32 md:pt-40 pb-10 md:pb-12">
-        <div
-          ref={headerRef}
-          style={{
-            opacity: headerVisible ? 1 : 0,
-            transform: headerVisible ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1)",
-          }}
-        >
-          {/* ← Back */}
-          <button
-            onClick={() => navigate("/", { state: { scrollBack: "categories" } })}
-            className="inline-flex items-center gap-2 mb-7 md:mb-9 text-[10px] font-bold tracking-[0.2em] uppercase text-[#4a3728]/50 border border-[#4a3728]/15 rounded-full px-4 py-1.5 hover:text-[#4a3728] hover:border-[#4a3728]/35 transition-all duration-300 cursor-pointer bg-transparent"
+    <div className="pt-32 pb-40 min-h-screen bg-[#fdfbf7]">
+      <div className="px-6 max-w-7xl mx-auto">
+        
+        {/* BREADCRUMB */}
+        <div className={`mb-12 flex items-center justify-between transition-all duration-1000 ${headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+           <button
+            onClick={() => navigate("/")}
+            className="group flex items-center space-x-2 text-[10px] uppercase tracking-widest font-bold text-[#4a3728]/40 hover:text-[#4a3728] transition"
           >
-            <ArrowLeft size={11} />
-            All Collections
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Collections</span>
           </button>
+          
+          <div className="hidden md:flex items-center space-x-2 text-[10px] uppercase tracking-widest font-bold text-[#4a3728]/40">
+            <span>Home</span>
+            <ChevronRight size={10} />
+            <span className="text-[#4a3728]">{category.name}</span>
+          </div>
+        </div>
 
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-[#4a3728] mb-4">
-            <span>Products</span>
-            <ChevronRight size={9} className="text-[#4a3728]/30" />
-            <span className="text-[#4a3728]/35">{category.name}</span>
-          </nav>
-
-          {/* Title */}
-          <h1 className="serif text-4xl md:text-6xl lg:text-[5.5rem] font-bold text-[#1a1512] leading-none tracking-tight mb-5">
+        {/* HEADER */}
+        <div 
+          ref={headerRef}
+          className={`mb-20 transition-all duration-1000 delay-200 ${headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        >
+          <span className="text-[#c4966a] font-bold text-[10px] uppercase tracking-[0.4em] mb-4 block">
+            Exclusive Collection
+          </span>
+          <h1 className="text-5xl md:text-7xl font-bold serif text-[#1a1512] mb-6 tracking-tight">
             {category.name}
           </h1>
-
-          {/* Gradient rule */}
-          <div
-            className="h-[3px] rounded-full mb-5"
-            style={{
-              width: headerVisible ? "5rem" : "0",
-              background: "linear-gradient(90deg, #4a3728 0%, #c4966a 60%, transparent 100%)",
-              transition: "width 1.1s cubic-bezier(0.22,1,0.36,1) 0.25s",
-            }}
-          />
-
-          {/* Description */}
-          <p className="text-[#4a3728]/55 text-sm md:text-base leading-[1.8] max-w-2xl mb-6">
+          <p className="text-[#4a3728]/60 text-lg md:text-xl max-w-2xl leading-relaxed italic">
             {category.description}
           </p>
-
-          {/* Count pill */}
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#4a3728]/10 bg-[#4a3728]/[0.04] text-[11px] font-semibold tracking-wide text-[#4a3728]/50">
-            <span className="w-[6px] h-[6px] rounded-full bg-[#c4966a]"
-              style={{ boxShadow: "0 0 6px rgba(196,150,106,0.65)" }} />
-            {products.length} {products.length === 1 ? "Product" : "Products"} Available
-          </span>
         </div>
 
-        <div className="mt-9 md:mt-11 h-px bg-gradient-to-r from-[#4a3728]/10 via-[#4a3728]/5 to-transparent" />
-      </section>
-
-      {/* ─── PRODUCTS ─── */}
-      <section id="products" className="max-w-7xl mx-auto px-5 md:px-10 pb-24 md:pb-36">
-
-        {/*
-          flex-wrap + justify-center:
-          Any number of fixed-width cards always centres in the row.
-          Partial rows (e.g. 3 of 4) sit centred, not left-stuck.
-        */}
-        <div
+        {/* PRODUCTS GRID */}
+        <div 
           ref={gridRef}
-          className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8"
+          className={`flex flex-wrap justify-center gap-6 md:gap-8 transition-all duration-1000 delay-400 ${gridVisible ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-10'}`}
         >
-          {products.map((product, idx) => (
-            <div
-              key={product._id}
-              onClick={() => navigate(`/product/${product.slug || product._id}`)}
-              className="group cursor-pointer flex flex-col"
-              style={{
-                ...cardStyle,
-                opacity: gridVisible ? 1 : 0,
-                transform: gridVisible ? "translateY(0)" : "translateY(28px)",
-                transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${idx * 75}ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${idx * 75}ms`,
-              }}
-            >
-              {/* ── IMAGE ── */}
+          {products.length > 0 ? (
+            products.map((product) => (
               <div
-                className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#ede8e0] mb-4 w-full"
+                key={product._id}
+                onClick={() => navigate(`/product/${product.slug || product._id}`)}
+                className="group relative bg-white rounded-[2rem] overflow-hidden border border-[#4a3728]/5 shadow-[0_4px_20px_rgba(74,55,40,0.03)] cursor-pointer transition-all duration-500 hover:shadow-[0_20px_50px_rgba(74,55,40,0.1)] hover:-translate-y-2 active:scale-[0.98]"
                 style={{
-                  boxShadow: "0 2px 8px rgba(74,55,40,0.07), 0 8px 28px rgba(74,55,40,0.08)",
-                  transition: "box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1)",
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 6px 20px rgba(74,55,40,0.14), 0 24px 56px rgba(74,55,40,0.17)";
-                  el.style.transform = "translateY(-6px)";
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 2px 8px rgba(74,55,40,0.07), 0 8px 28px rgba(74,55,40,0.08)";
-                  el.style.transform = "translateY(0)";
+                  flex: `0 0 ${cardWidth || "calc(50% - 12px)"}`,
+                  maxWidth: cardWidth || "calc(50% - 12px)",
                 }}
               >
-                <img
-                  src={getOptimizedImage(product.images?.[0])}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.08]"
-                  loading="lazy"
-                />
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 flex items-end p-3 md:p-4 bg-gradient-to-t from-[#2b1f14]/75 via-[#2b1f14]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#fdfbf7] text-[#4a3728] text-[9px] md:text-[10px] font-bold tracking-widest uppercase translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                    <ArrowUpRight size={10} />
-                    View Details
-                  </span>
-                </div>
-
-                {/* Number badge */}
-                <div className="absolute top-2.5 right-2.5 w-6 h-6 md:w-7 md:h-7 rounded-full bg-white/12 backdrop-blur border border-white/20 flex items-center justify-center text-[8px] md:text-[9px] font-bold text-white/90 tracking-wide">
-                  {String(idx + 1).padStart(2, "0")}
-                </div>
-              </div>
-
-              {/* ── INFO ── */}
-              <div className="flex-1 px-0.5">
-                <h3 className="serif font-bold text-[#1a1512] text-sm md:text-base leading-snug mb-1.5 group-hover:text-[#4a3728] transition-colors duration-300 line-clamp-2">
-                  {product.name}
-                </h3>
-                <p className="text-[10px] md:text-xs text-[#4a3728]/45 leading-relaxed line-clamp-2 mb-3">
-                  {product.description}
-                </p>
-
-                {/* Underline bar */}
-                <div className="relative h-px overflow-hidden rounded-full">
-                  <div className="absolute inset-0 bg-[#4a3728]/8" />
-                  <div
-                    className="absolute inset-y-0 left-0 rounded-full"
-                    style={{
-                      width: "1.25rem",
-                      background: "linear-gradient(90deg, #4a3728, #c4966a)",
-                      transition: "width 0.55s cubic-bezier(0.22,1,0.36,1)",
-                    }}
-                    ref={el => {
-                      if (!el) return;
-                      const card = el.closest(".group");
-                      if (!card) return;
-                      const on  = () => (el.style.width = "100%");
-                      const off = () => (el.style.width = "1.25rem");
-                      card.addEventListener("mouseenter", on);
-                      card.addEventListener("mouseleave", off);
-                    }}
+                {/* Image Container */}
+                <div className="aspect-[4/5] overflow-hidden bg-[#f9f7f2]">
+                  <img
+                    src={getOptimizedImage(product.images[0])}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
                   />
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
+                  
+                  {/* Floating Action Hint */}
+                  <div className="absolute bottom-6 right-6 p-3 bg-white/90 backdrop-blur-md rounded-full shadow-lg opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                    <ArrowUpRight size={18} className="text-[#4a3728]" />
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 md:p-8">
+                  <h3 className="text-lg md:text-xl font-bold text-[#1a1512] mb-2 group-hover:text-[#c4966a] transition-colors line-clamp-1">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center gap-3">
+                    <span className="h-px w-6 bg-[#4a3728]/20" />
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-[#4a3728]/40">
+                      View Details
+                    </span>
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="py-20 text-center w-full">
+               <p className="serif text-xl text-[#4a3728]/40">No products available in this collection yet.</p>
             </div>
-          ))}
+          )}
         </div>
-
-        {products.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-[#4a3728]/25">
-            <span className="text-5xl mb-5 opacity-30">✦</span>
-            <p className="serif italic text-lg">More products coming soon…</p>
-          </div>
-        )}
-      </section>
+      </div>
     </div>
   );
 };
