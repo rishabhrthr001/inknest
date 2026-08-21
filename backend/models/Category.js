@@ -23,6 +23,11 @@ const categorySchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    type: {
+      type: String,
+      enum: ["carry_bags", "stickers"],
+      default: "carry_bags",
+    },
   },
   { timestamps: true }
 );

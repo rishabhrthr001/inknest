@@ -11,6 +11,7 @@ import categoryRoutes from "./routes/category.js";
 import fetchCatRoute from "./routes/fetchCategory.js";
 import productRoute from "./routes/product.js";
 import fetchProRoute from "./routes/fetchProduct.js";
+import bannerRoutes from "./routes/banner.js";
 
 dotenv.config();
 
@@ -47,6 +48,8 @@ app.use("/add", categoryRoutes);
 app.use("/api", fetchCatRoute);
 app.use("/api", fetchProRoute);
 app.use("/add", productRoute);
+app.use("/api", bannerRoutes);
+app.use("/add", bannerRoutes);
 
 // Serve static files
 app.use(express.static("frontend/dist"));

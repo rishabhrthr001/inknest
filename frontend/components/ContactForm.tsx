@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Send, CheckCircle } from "lucide-react";
 import confetti from "canvas-confetti";
 import emailjs from "@emailjs/browser";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 interface ContactFormProps {
   initialSubject?: string;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
 import { X, Send, CheckCircle } from "lucide-react";
 

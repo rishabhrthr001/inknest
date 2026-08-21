@@ -6,6 +6,7 @@ export interface Category {
   slug?: string;
   image: string;
   description: string;
+  type?: "carry_bags" | "stickers";
 }
 
 export interface HeroSlide {
@@ -30,4 +31,10 @@ export interface Product {
   images: string[];
   price?: string;
   description: string;
+}
+
+export interface Banner {
+  _id: string;
+  key: string;
+  image: string;
 }

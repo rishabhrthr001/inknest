@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Save, X, Upload } from "lucide-react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Category } from "../types";
 import API from "@/services/api";
 
@@ -11,6 +11,7 @@ const AdminCategories: React.FC = () => {
   const [adding, setAdding] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const isOpen = adding || editing;
 
@@ -76,40 +77,7 @@ const AdminCategories: React.FC = () => {
 
   /* ---------- DELETE ---------- */
   const handleDelete = (id: string) => {
-    toast(
-      (t) => (
-        <div className="flex items-center gap-4">
-          <span className="text-sm">Delete this category permanently?</span>
-
-          <button
-            onClick={async () => {
-              toast.dismiss(t.id);
-              const toastId = toast.loading("Deleting...");
-              try {
-                await axios.delete(`${API}/add/category/${id}`);
-                await fetchCategories();
-                toast.success("Category deleted", { id: toastId });
-              } catch (err: any) {
-                toast.error(err.response?.data?.msg || "Delete failed", {
-                  id: toastId,
-                });
-              }
-            }}
-            className="px-3 py-1 text-xs rounded bg-red-500 text-white"
-          >
-            Delete
-          </button>
-
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 text-xs rounded bg-gray-200"
-          >
-            Cancel
-          </button>
-        </div>
-      ),
-      { duration: 8000 }
-    );
+    setDeleteConfirmId(id);
   };
 
   /* ---------- OPEN EDIT ---------- */
@@ -176,9 +144,14 @@ const AdminCategories: React.FC = () => {
               </div>
 
               <div className="h-[15%] px-4 py-2">
-                <h3 className="text-sm font-bold text-[#4a3728] truncate">
-                  {c.name}
-                </h3>
+                <div className="flex justify-between items-center gap-2">
+                  <h3 className="text-sm font-bold text-[#4a3728] truncate">
+                    {c.name}
+                  </h3>
+                  <span className="text-[9px] uppercase font-extrabold tracking-wider text-[#c4966a] whitespace-nowrap bg-[#c4966a]/5 px-2 py-0.5 rounded-full">
+                    {c.type === "stickers" ? "Stickers" : "Carry Bag"}
+                  </span>
+                </div>
                 <p className="text-xs text-[#4a3728]/60 line-clamp-1">
                   {c.description}
                 </p>
@@ -248,6 +221,16 @@ const AdminCategories: React.FC = () => {
 
               {/* FORM */}
               <div className="space-y-4">
+                <select
+                  name="type"
+                  required
+                  defaultValue={editing?.type || "carry_bags"}
+                  className="w-full p-3 rounded-lg bg-[#fdfbf7] border text-sm"
+                >
+                  <option value="carry_bags">Carry Bag Category</option>
+                  <option value="stickers">Stickers Category</option>
+                </select>
+
                 <input
                   name="name"
                   required
@@ -274,6 +257,48 @@ const AdminCategories: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* CONFIRM DELETE MODAL */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm pointer-events-auto">
+          <div className="bg-[#fdfbf7] border border-[#4a3728]/10 max-w-sm w-full p-8 rounded-3xl shadow-2xl flex flex-col items-center text-center gap-6 animate-slide-up">
+            <div className="w-12 h-12 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-600">
+              <Trash2 size={22} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#1a1512] serif">Confirm Deletion</h3>
+              <p className="text-xs text-[#1a1512]/60 mt-2">
+                Are you sure you want to delete this category permanently? All associated products may be affected. This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex gap-4 w-full">
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-grow px-5 py-3 border rounded-full text-xs font-bold uppercase tracking-wider text-[#1a1512] hover:bg-[#4a3728]/5 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  const id = deleteConfirmId;
+                  setDeleteConfirmId(null);
+                  const toastId = toast.loading("Deleting category...");
+                  try {
+                    await axios.delete(`${API}/add/category/${id}`);
+                    await fetchCategories();
+                    toast.success("Category deleted", { id: toastId });
+                  } catch (err: any) {
+                    toast.error(err.response?.data?.msg || "Delete failed", { id: toastId });
+                  }
+                }}
+                className="flex-grow px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-red-600 hover:bg-red-700 text-white transition shadow-lg shadow-red-600/10 cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

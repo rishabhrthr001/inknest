@@ -474,7 +474,13 @@ body {
   position: relative;
   background: #2c1f14;
   overflow: hidden;
-  padding: 5rem 1.5rem 5.5rem;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .usp-section {
+    padding: 5rem 1.5rem 5.5rem;
+  }
 }
 
 @media (min-width: 768px) {

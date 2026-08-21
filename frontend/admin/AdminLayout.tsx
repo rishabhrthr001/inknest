@@ -1,4 +1,4 @@
-import { LayoutGrid, Package, LogOut } from "lucide-react";
+import { LayoutGrid, Package, LogOut, Image as ImageIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -28,7 +28,7 @@ const AdminLayout = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div
             onClick={() => navigate("/admin/categories")}
             className="cursor-pointer bg-white rounded-3xl p-10 border shadow hover:shadow-xl transition"
@@ -45,6 +45,15 @@ const AdminLayout = () => {
             <Package size={40} className="text-[#4a3728] mb-6" />
             <h2 className="text-2xl font-bold serif mb-2">Products</h2>
             <p className="text-[#4a3728]/60">Manage products by category</p>
+          </div>
+
+          <div
+            onClick={() => navigate("/admin/banners")}
+            className="cursor-pointer bg-white rounded-3xl p-10 border shadow hover:shadow-xl transition"
+          >
+            <ImageIcon size={40} className="text-[#4a3728] mb-6" />
+            <h2 className="text-2xl font-bold serif mb-2">Banners</h2>
+            <p className="text-[#4a3728]/60">Customize collection banner images</p>
           </div>
         </div>
       </div>

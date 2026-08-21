@@ -18,6 +18,9 @@ const Navbar: React.FC = () => {
   const isHome = location.pathname === "/";
   const isAbout = location.pathname === "/about";
 
+  const carryBags = categories.filter((c) => c.type !== "stickers");
+  const stickers = categories.filter((c) => c.type === "stickers");
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -71,11 +74,11 @@ const Navbar: React.FC = () => {
   }) => (
     <button
       onClick={onClick}
-      className="relative group px-2 py-2 transition-colors duration-300 text-[#4a3728]"
+      className="relative group px-2 py-2 transition-colors duration-300 text-[#1a1512] font-semibold tracking-wide hover:text-[#c4966a]"
     >
       {label}
       <div
-        className={`absolute bottom-0 left-0 h-[2px] bg-[#4a3728] transition-all duration-500 ${isActive ? "w-full" : "w-0 group-hover:w-full"
+        className={`absolute bottom-0 left-0 h-[2px] bg-[#c4966a] transition-all duration-500 ${isActive ? "w-full" : "w-0 group-hover:w-full"
           }`}
       />
     </button>
@@ -90,61 +93,40 @@ const Navbar: React.FC = () => {
   return (
     <>
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-center p-4 md:p-6 pointer-events-none">
+      <nav className={`fixed top-0 left-0 w-full z-50 flex justify-center p-4 md:p-6 pointer-events-none transition-all duration-500
+        ${(!isHome || isScrolled) ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"}
+      `}>
         <div
           className={`pointer-events-auto w-full max-w-5xl flex items-center justify-between px-6 md:px-8 py-3 md:py-4 rounded-full transition-all duration-500
-          backdrop-blur-md
+          backdrop-blur-xl border border-white/20
           ${(!isHome || isScrolled) 
-            ? "shadow-lg bg-white/90 border border-[#4a3728]/5 py-2 md:py-3" 
-            : "bg-white/40 mb-4"}
+            ? "shadow-xl bg-white/35 border-[#4a3728]/10 py-2 md:py-3" 
+            : "shadow-md bg-white/15 mb-4"}
           `}
         >
-          {/* LEFT */}
-          <div className="flex items-center space-x-6 md:space-x-4">
-            {/* LOGO */}
+          {/* MOBILE LEFT: Hamburger + Logo OR DESKTOP LEFT: Logo only */}
+          <div className="flex items-center space-x-4">
+            {/* Hamburger (Mobile Only, Leftmost) */}
+            <button
+              className="md:hidden text-[#1a1512] hover:opacity-80 transition cursor-pointer"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
+
+            {/* Logo */}
             <div
               className="flex items-center cursor-pointer select-none"
               onClick={handleLogoClick}
             >
-              <span className="text-xl md:text-lg font-bold tracking-widest text-[#4a3728] serif">
+              <span className="text-xl md:text-lg font-bold tracking-widest text-[#1a1512] serif">
                 INKNEST
               </span>
             </div>
-
-            {/* MOBILE CATEGORY DROPDOWN */}
-            <div className="relative md:hidden">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-1 text-sm text-[#4a3728]"
-              >
-                <span>Categories</span>
-                <ChevronDown
-                  size={14}
-                  className={`transition-transform ${isDropdownOpen ? "rotate-180" : ""
-                    }`}
-                />
-              </button>
-
-              {isDropdownOpen && (
-                <div className="absolute left-0 mt-4 w-52 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border z-50 overflow-hidden py-1">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat._id}
-                      onClick={() => goToCategory(cat.slug || cat._id)}
-                      className="w-full text-left px-5 py-3 text-sm
-                                 transition-all duration-200
-                                 hover:bg-[#4a3728]/5 hover:translate-x-1"
-                    >
-                      {cat.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
-          {/* DESKTOP NAV */}
-          <div className="hidden md:flex items-center space-x-8 text-xs uppercase tracking-wide text-[#4a3728]">
+          {/* DESKTOP NAV (Hidden on mobile) */}
+          <div className="hidden md:flex items-center space-x-8 text-xs uppercase tracking-wide text-[#1a1512]">
             <NavButton
               label="Home"
               onClick={handleLogoClick}
@@ -165,32 +147,51 @@ const Navbar: React.FC = () => {
               <div
                 className={`absolute left-0 mt-4 w-56 bg-white/90 backdrop-blur-md
                 rounded-2xl shadow-xl border
-                overflow-hidden py-1
+                overflow-hidden py-2
                 transition-all duration-300
                 ${isDropdownOpen
                     ? "opacity-100 visible translate-y-0"
                     : "opacity-0 invisible -translate-y-2"
                   }`}
               >
-                {categories.map((cat) => (
-                  <button
-                    key={cat._id}
-                    onClick={() => goToCategory(cat.slug || cat._id)}
-                    className="group relative w-full text-left px-6 py-3.5 text-xs uppercase
-                               flex items-center
-                               transition-all duration-300 ease-out
-                               hover:bg-[#4a3728]/5"
-                  >
-                    <span
-                      className="absolute left-0 top-0 h-full w-[2px] bg-[#4a3728]
-                                 scale-y-0 group-hover:scale-y-100
-                                 transition-transform duration-300 origin-top"
-                    />
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">
-                      {cat.name}
-                    </span>
-                  </button>
-                ))}
+                {carryBags.length > 0 && (
+                  <>
+                    <div className="px-6 py-1.5 text-[9px] uppercase tracking-widest font-extrabold text-[#1a1512]/50 bg-[#4a3728]/5 mb-1">
+                      Carry Bags
+                    </div>
+                    {carryBags.map((cat) => (
+                      <button
+                        key={cat._id}
+                        onClick={() => goToCategory(cat.slug || cat._id)}
+                        className="group relative w-full text-left px-6 py-3 text-xs uppercase flex items-center transition-all duration-300 ease-out text-[#1a1512] font-semibold hover:bg-[#4a3728]/5"
+                      >
+                        <span className="absolute left-0 top-0 h-full w-[2px] bg-[#c4966a] scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
+                        <span className="transition-transform duration-300 group-hover:translate-x-1">
+                          {cat.name}
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                )}
+                {stickers.length > 0 && (
+                  <>
+                    <div className="px-6 py-1.5 text-[9px] uppercase tracking-widest font-extrabold text-[#1a1512]/50 bg-[#4a3728]/5 mt-2 mb-1">
+                      Stickers
+                    </div>
+                    {stickers.map((cat) => (
+                      <button
+                        key={cat._id}
+                        onClick={() => goToCategory(cat.slug || cat._id)}
+                        className="group relative w-full text-left px-6 py-3 text-xs uppercase flex items-center transition-all duration-300 ease-out text-[#1a1512] font-semibold hover:bg-[#4a3728]/5"
+                      >
+                        <span className="absolute left-0 top-0 h-full w-[2px] bg-[#c4966a] scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
+                        <span className="transition-transform duration-300 group-hover:translate-x-1">
+                          {cat.name}
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                )}
               </div>
             </div>
 
@@ -208,13 +209,57 @@ const Navbar: React.FC = () => {
             </button>
           </div>
 
-          {/* MOBILE MENU BUTTON */}
-          <button
-            className="md:hidden text-[#4a3728]"
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            <Menu />
-          </button>
+          {/* MOBILE RIGHT: Category Dropdown (Mobile Only) */}
+          <div className="relative md:hidden">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center space-x-1 text-sm text-[#1a1512] font-semibold cursor-pointer"
+            >
+              <span>Categories</span>
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${isDropdownOpen ? "rotate-180" : ""
+                  }`}
+              />
+            </button>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-4 w-52 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border z-50 overflow-hidden py-2 text-[#1a1512]">
+                {carryBags.length > 0 && (
+                  <>
+                    <div className="px-5 py-1.5 text-[9px] uppercase tracking-wider font-extrabold text-[#1a1512]/50 bg-[#4a3728]/5 mb-1">
+                      Carry Bags
+                    </div>
+                    {carryBags.map((cat) => (
+                      <button
+                        key={cat._id}
+                        onClick={() => goToCategory(cat.slug || cat._id)}
+                        className="w-full text-left px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-[#4a3728]/5 hover:translate-x-1"
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </>
+                )}
+                {stickers.length > 0 && (
+                  <>
+                    <div className="px-5 py-1.5 text-[9px] uppercase tracking-wider font-extrabold text-[#1a1512]/50 bg-[#4a3728]/5 mt-2 mb-1">
+                      Stickers
+                    </div>
+                    {stickers.map((cat) => (
+                      <button
+                        key={cat._id}
+                        onClick={() => goToCategory(cat.slug || cat._id)}
+                        className="w-full text-left px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-[#4a3728]/5 hover:translate-x-1"
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -226,7 +271,7 @@ const Navbar: React.FC = () => {
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl px-8 pt-6 pb-10 animate-slide-up text-[#4a3728]">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/75 backdrop-blur-xl rounded-t-3xl border-t border-white/20 shadow-2xl px-8 pt-6 pb-10 animate-slide-up text-[#4a3728]">
             <div className="flex justify-between items-center mb-8">
               <span className="font-bold tracking-wide">Menu</span>
               <button onClick={() => setIsMobileMenuOpen(false)}>

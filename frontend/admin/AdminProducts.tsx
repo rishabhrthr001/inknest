@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Plus, Save, X, Upload, Edit2, Trash2 } from "lucide-react";
 import { Product, Category } from "../types";
 import API from "@/services/api";
@@ -16,6 +16,7 @@ const AdminProducts: React.FC = () => {
   const [previews, setPreviews] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const isOpen = adding || editing;
 
@@ -67,40 +68,7 @@ const AdminProducts: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    toast(
-      (t) => (
-        <div className="flex items-center gap-4">
-          <span className="text-sm">Delete this product permanently?</span>
-
-          <button
-            onClick={async () => {
-              toast.dismiss(t.id);
-              const tid = toast.loading("Deleting product...");
-              try {
-                await axios.delete(`${API}/add/product/${id}`);
-                await fetchProducts(activeCategory);
-                toast.success("Product deleted", { id: tid });
-              } catch (err: any) {
-                toast.error(err.response?.data?.msg || "Delete failed", {
-                  id: tid,
-                });
-              }
-            }}
-            className="px-3 py-1 text-xs rounded bg-red-500 text-white"
-          >
-            Delete
-          </button>
-
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 text-xs rounded bg-gray-200"
-          >
-            Cancel
-          </button>
-        </div>
-      ),
-      { duration: 8000 }
-    );
+    setDeleteConfirmId(id);
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -373,6 +341,48 @@ const AdminProducts: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* CONFIRM DELETE MODAL */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm pointer-events-auto">
+          <div className="bg-[#fdfbf7] border border-[#4a3728]/10 max-w-sm w-full p-8 rounded-3xl shadow-2xl flex flex-col items-center text-center gap-6 animate-slide-up">
+            <div className="w-12 h-12 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-600">
+              <Trash2 size={22} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#1a1512] serif">Confirm Deletion</h3>
+              <p className="text-xs text-[#1a1512]/60 mt-2">
+                Are you sure you want to delete this product permanently? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex gap-4 w-full">
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-grow px-5 py-3 border rounded-full text-xs font-bold uppercase tracking-wider text-[#1a1512] hover:bg-[#4a3728]/5 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  const id = deleteConfirmId;
+                  setDeleteConfirmId(null);
+                  const toastId = toast.loading("Deleting product...");
+                  try {
+                    await axios.delete(`${API}/add/product/${id}`);
+                    await fetchProducts(activeCategory);
+                    toast.success("Product deleted", { id: toastId });
+                  } catch (err: any) {
+                    toast.error(err.response?.data?.msg || "Delete failed", { id: toastId });
+                  }
+                }}
+                className="flex-grow px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-red-600 hover:bg-red-700 text-white transition shadow-lg shadow-red-600/10 cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

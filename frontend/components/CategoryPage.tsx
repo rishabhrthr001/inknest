@@ -131,13 +131,13 @@ const CategoryPage: React.FC = () => {
         
         {/* BREADCRUMB */}
         <div className={`mb-12 flex items-center justify-between transition-all duration-1000 ${headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
-           <button
-            onClick={() => navigate("/")}
-            className="group flex items-center space-x-2 text-[10px] uppercase tracking-widest font-bold text-[#4a3728]/40 hover:text-[#4a3728] transition"
-          >
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Collections</span>
-          </button>
+            <button
+             onClick={() => navigate("/", { state: { scrollBack: `category-${category.slug || category._id}` } })}
+             className="group flex items-center space-x-2 text-[10px] uppercase tracking-widest font-bold text-[#4a3728]/40 hover:text-[#4a3728] transition"
+           >
+             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+             <span>Back to Collections</span>
+           </button>
           
           <div className="hidden md:flex items-center space-x-2 text-[10px] uppercase tracking-widest font-bold text-[#4a3728]/40">
             <span>Home</span>

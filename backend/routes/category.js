@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/category", uploadSingle, async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, type } = req.body;
 
     const existing = await Category.findOne({ name });
     if (existing) {
@@ -20,6 +20,7 @@ router.post("/category", uploadSingle, async (req, res) => {
       description,
       image: req.file.path,
       slug: slugify(name),
+      type: type || "carry_bags",
     });
 
     res.status(201).json(category);
@@ -30,12 +31,16 @@ router.post("/category", uploadSingle, async (req, res) => {
 
 router.put("/category/:id", uploadSingle, async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, type } = req.body;
 
     const updateData = {
       name,
       description,
     };
+
+    if (type) {
+      updateData.type = type;
+    }
 
     if (name) {
       updateData.slug = slugify(name);
